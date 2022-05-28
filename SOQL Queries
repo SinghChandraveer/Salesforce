@@ -1,0 +1,56 @@
+SELECT  QualifiedApiName FROM EntityDefinition order by QualifiedApiName // gives Object Names
+
+SELECT QualifiedApiName, DeveloperName, Description, DataType, LastModifiedById, LastModifiedDate FROM FieldDefinition WHERE EntityDefinition.DeveloperName='Account' // Gives field names
+
+select id,name from externalstring where name = 'CurrentPaymentPlanType2'
+select id,name from Apt_UK__PaymentPlanType__c where Apt_UK__PlanType__c = 'pay in full'
+
+SELECT ApiName, TriggerType, Label FROM FlowDefinitionView where ApiName = 'EvaluateSimulateProcess'
+
+SELECT Id, ValidationName, Active, Description, EntityDefinition.DeveloperName, ErrorDisplayField, ErrorMessage FROM ValidationRule where EntityDefinition.DeveloperName = 'Account'
+
+select id,ApexClass.name,MethodName,Message,Outcome,TestTimeStamp,StackTrace,ApexTestRunResultid from ApexTestResult
+where TestTimeStamp = TODAY and Outcome = 'fail'
+
+select id,name, NamespacePrefix,MajorVersion,MinorVersion from publisher where name = 'UKReleasePackage'
+
+https://andyinthecloud.com/2014/01/05/querying-custom-object-and-field-ids-via-tooling-api/
+
+https://www.tutorialspoint.com/apex/apex_arrays.htm
+__________________________________________________________________________________________________________________________________
+
+SELECT sObjectType, PermissionsCreate, PermissionsRead, PermissionsEdit, PermissionsDelete, PermissionsModifyAllRecords, 
+   PermissionsViewAllRecords FROM ObjectPermissions 
+ WHERE ParentId IN ( SELECT Id 
+   FROM permissionset 
+  WHERE PermissionSet.Profile.Name = 'System Administrator' )
+
+  SELECT SobjectType, Field, PermissionsRead, PermissionsEdit,Parent.Profileid, Parent.Profile.name FROM FieldPermissions 
+WHERE Parent.Profileid = '00e3z000001onWkAAI'
+
+__________________________________________________________________________________________________________________________________
+
+List<organization> lstOrganization = [Select id,instanceName,isSandbox from Organization];
+if(lstOrganization.size()>0) {
+   if(lstOrganization[0].isSandbox) {
+       system.debug('Its Sandbox Instance');
+   } else {
+       system.debug('Its Production Instance');
+   }
+
+}
+________________________________________________________________________
+SELECT SobjectType, Field, PermissionsRead, PermissionsEdit,Parent.Profileid, Parent.Profile.name FROM FieldPermissions 
+WHERE Field='Account.ClearStart_Active__c' 
+And parent.profileid = '00e3z000001bvt7AAA'
+
+
+list<FieldPermissions> fldpr = new list<FieldPermissions>();
+for (FieldPermissions f : [SELECT id,SobjectType, Field, PermissionsRead, PermissionsEdit,Parent.Profileid, Parent.Profile.name FROM FieldPermissions 
+where field = 'Account.Active__c' and Parent.Profileid = '00e5j000001D69PAAS']){
+f.PermissionsEdit = false;
+fldpr.add(f);
+}
+upsert fldpr;
+
+
