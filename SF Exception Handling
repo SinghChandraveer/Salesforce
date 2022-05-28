@@ -1,0 +1,76 @@
+
+  savepoint sp = database.setSavepoint();
+  try {
+    // Try block
+   code_block
+  } catch (exceptionType variableName) {
+    // Initial catch block.
+    // At least the catch block or the finally block must be present. 
+   code_block
+  } catch (Exception e) {
+    Database.rollback(sp); // reverting any change made in try block to database.
+    // Optional additional catch statement for other exception types.
+    // Note that the general exception type, 'Exception',
+    // must be the last catch block when it is used.
+   code_block
+  } finally {
+    // Finally block.
+    // At least the catch block or the finally block must be present.
+   code_block
+  }
+_________________________________________________________________________________________________________________________
+throwing Exceptions and Inner Exceptions
+    // Define two custom exceptions
+    public class My1Exception extends Exception {} 
+    public class My2Exception extends Exception {} 
+
+    try { 
+        // Throw first exception
+        throw new My1Exception('First exception'); 
+    } catch (My1Exception e) { 
+        // Throw second exception with the first 
+        // exception variable as the inner exception
+        throw new My2Exception('Thrown with inner exception', e);
+    }
+    
+    
+    class CustomException extends Exception{}
+    static Boolean isLoggingEnabled(){
+        if(logmanage != null){return logmanage.EnableLogging__c;}
+        else{throw new CustomException('No Log Management Custom Setting found');}
+    }
+_________________________________________________________________________________________________________________________
+
+Common Exception Methods :
+    getCause: Returns the cause of the exception as an exception object.
+    getLineNumber: Returns the line number from where the exception was thrown.
+    getMessage: Returns the error message that displays for the user.
+    getStackTraceString: Returns the stack trace of a thrown exception as a string.
+    getTypeName: Returns the type of exception, such as DmlException, ListException, MathException, and so on.
+
+Some exception types, such as DmlException, have specific exception methods that apply to only them and aren’t common to other exception types:
+    getDmlFieldNames(Index of the failed record): Returns the names of the fields that caused the error for the specified failed record.
+    getDmlId(Index of the failed record): Returns the ID of the failed record that caused the error for the specified failed record.
+    getDmlMessage(Index of the failed record): Returns the error message for the specified failed record.
+    getNumDml: Returns the number of failed records.
+
+ _________________________________________________________________________________________________________________________
+ https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_methods_system_limits.htm
+ 
+  	private static string getLimits(){
+        // Getting all limits in one string,
+        string limitstring = '';
+        limitstring += 'Query Limits: '+ Limits.getQueries() + '/' + Limits.getLimitQueries() +'\n';
+        limitstring += 'DML Rows Limits: '+Limits.getDMLRows()+'/' + Limits.getLimitDMLRows()+'\n';
+        limitstring += 'Heap Size Limits: '+Limits.getHeapSize()+'/' +Limits.getLimitHeapSize()+'\n';
+        limitstring += 'Query Return Limits: '+Limits.getQueryRows()+'/' + Limits.getLimitQueryRows()+'\n';
+        limitstring += 'Aggregate Queries: '+Limits.getAggregateQueries()+'/' + Limits.getLimitAggregateQueries()+ '\n';
+        limitstring += 'Callouts: '+Limits.getCallouts()+'/' +Limits.getLimitCallouts()+ '\n';
+        limitstring += 'CPU Time: '+Limits.getCpuTime()+'/' +Limits.getLimitCpuTime()+ '\n';
+        limitstring += 'DML Statements: '+Limits.getDMLStatements()+'/' +Limits.getLimitDMLStatements()+ '\n';
+        limitstring += 'Email Invocations: '+Limits.getEmailInvocations()+'/' +Limits.getLimitEmailInvocations()+ '\n';
+        limitstring += 'Future Calls: '+Limits.getFutureCalls()+'/' +Limits.getLimitFutureCalls()+ '\n';
+        limitstring += 'Query Locator Rows: '+Limits.getQueryLocatorRows() +'/'+Limits.getLimitQueryLocatorRows()+ '\n';
+        return limitstring;
+    }
+  
