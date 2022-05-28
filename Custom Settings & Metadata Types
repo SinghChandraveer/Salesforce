@@ -1,0 +1,56 @@
+
+***********************************************************CUSTOM SETTING************************************************************
+
+Note :
+    Custom setting data can not be deployed/migrated.
+    Tabs can not be created for CS Object.
+    Only 300 fields are allowed in CS.
+    CS count against total number of objects in Org.
+    hierarchy CS can be used in formula & validations.
+
+Return all records of custom setting
+    list<CorrespondenceTypeSetup__c> cs = CorrespondenceTypeSetup__c.getall().values();
+    list<CorrespondenceTypeSetup__c> cs = [select id,name from CorrespondenceTypeSetup__c];
+    for(CorrespondenceTypeSetup__c C : cs){system.debug('-'+c);}
+    
+    Its map will be like :
+    Map<String, CorrespondenceTypeSetup__c> countries = CorrespondenceTypeSetup__c.getAll(); // Apply .values() method to access the records.
+
+fatching specific record
+    CorrespondenceTypeSetup__c cs = CorrespondenceTypeSetup__c.getInstance('Invalid Bank Account Type');
+    CorrespondenceTypeSetup__c cs = CorrespondenceTypeSetup__c.getValues('Invalid Bank Account Type');
+    system.debug(' - '+cs);
+
+For hierarchy custom setting values specific to user and profile settings
+    CorrespondenceTypeSetup__c cs = CorrespondenceTypeSetup__c.getInstance(userId); //Returns the CS data set record for the specified user ID
+    CorrespondenceTypeSetup__c cs = CorrespondenceTypeSetup__c.getValues(userId);
+    
+    CorrespondenceTypeSetup__c cs = CorrespondenceTypeSetup__c.getInstance(profileId); //Returns the CS data set record for the specified profile ID
+    CorrespondenceTypeSetup__c cs = CorrespondenceTypeSetup__c.getValues(profileId);
+    
+    CorrespondenceTypeSetup__c cs = CorrespondenceTypeSetup__c.getOrgDefaults(); // Returns the custom setting data set record defined for the organization
+    
+    
+    
+    
+    ***********************************************************CUSTOM METADATA TYPES************************************************************
+    
+    Note :
+        CMT are similar to custom settings except, its records can be deployed/migrate with it.
+        we can Use Custom Metadata Types in Formulas, Default Values, and Validation Rules.
+        we can create Validation rules, page layouts, lookup to another metadata/object like custom objects.
+        We can not create custom Tab for CM.
+        we can Query to get data, But its query doesn't count against governor limits.
+        
+    Methods
+        .getAll() : Map<String, Games__mdt> mcs = Games__mdt.getAll();
+        .getInstance(recordId) : Games__mdt mc = Games__mdt.getInstance('m00000000000001');
+        .getInstance(developerName) : Games__mdt mc = Games__mdt.getInstance('FirstRecord');
+        .getInstance(qualifiedApiName) : Games__mdt mc = Games__mdt.getInstance('MyNamespace__FirstRecord');
+        
+        Support_Tier__mdt [] minSpent = [SELECT Minimum_Spending__c FROM Support_Tier__mdt]; // Quering the records
+    
+    
+    
+    
+    
