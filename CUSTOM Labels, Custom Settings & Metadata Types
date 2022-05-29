@@ -1,3 +1,19 @@
+***********************************************************CUSTOM Labels************************************************************
+We can create up to 5,000 custom labels and they can be up to 1,000 characters in length, Custom labels from managed packages don’t count toward this limit.
+To mark the custom label as protected, select Protected Component.
+
+
+In Apex use the System.Label.Label_name syntax.
+In Visualforce, use the $Label global variable.
+In Aura components, use the $Label.c.labelName syntax for the default namespace or $Label.namespace.labelName if your org has a namespace or to access a label in a managed package.
+In Lightning web components, import the label using the @salesforce/label/namespace.Label_name syntax.
+In Lightning App Builder component labels and attributes, use the {!$Label.customLabelName} expression.
+
+
+We can only access the value of a custom label using system.label.label_name.
+String errorMsg = System.Label.generic_error;
+
+SOQL : Select id,name,value from ExternalString // Using Tooling API
 
 ***********************************************************CUSTOM SETTING************************************************************
 
