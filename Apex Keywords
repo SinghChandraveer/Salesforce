@@ -1,0 +1,90 @@
+final :
+  1.Final variables can only be assigned a value once, either when you declare a variable or inside a constructor. 
+    You must assign a value to it in one of these two places.
+  2.Static final variables can be changed in static initialization code or where defined.
+  3.To define a constant, mark a variable as both static and final.
+  4.Methods and classes are final by default. You cannot use the final keyword in the declaration of a class or method. 
+    This means they cannot be overridden. Use the virtual keyword if you need to override a method or class.
+    
+________________________________________________________________________________________________________________________________
+--------------------------------------------------------------------------------------------------------------------------------
+instanceof :
+  To verify at run time whether an object is actually an instance of a particular class, use the instanceof keyword.
+  
+  EXAMPLE - 
+      If (Reports.get(0) instanceof CustomReport) {
+        // Can safely cast it back to a custom report object
+       CustomReport c = (CustomReport) Reports.get(0);               // Type casting only if it is an instance of customreport
+       } Else {
+       // Do something with the non-custom-report.
+      }
+  
+________________________________________________________________________________________________________________________________
+--------------------------------------------------------------------------------------------------------------------------------
+super:
+  The super keyword can be used by classes that are extended from virtual or abstract classes. 
+  By using super, you can override constructors and methods from the parent class.
+
+________________________________________________________________________________________________________________________________
+--------------------------------------------------------------------------------------------------------------------------------
+this Keyword :
+  You can use the this keyword in dot notation, without parenthesis, to represent the current instance of the class in which it appears. 
+  Use this form of the this keyword to access instance variables and methods.
+  public class myTestThis {
+
+  string s;
+    {
+        this.s = 'TestString';
+    }
+   }
+
+   you can use the this keyword to do constructor chaining, that is, in one constructor, call another constructor. 
+   In this format, use the this keyword with parentheses. For example:
+   
+   public class testThis {
+
+    // First constructor for the class. It requires a string parameter.
+       public testThis(string s2) {
+       }
+
+    // Second constructor for the class. It does not require a parameter.
+    // This constructor calls the first constructor using the this keyword.
+       public testThis() {
+           this('None');
+       }
+    }
+   
+________________________________________________________________________________________________________________________________
+--------------------------------------------------------------------------------------------------------------------------------
+transient : 
+ Use the transient keyword to declare instance variables that can't be saved, and shouldn't be transmitted as part of the view state for a Visualforce page.
+ 
+________________________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________________
+With Sharing : 
+  to enforce sharing rules of the current user. 
+  Explicitly setting this keyword ensures that Apex code runs in the current user context. 
+  Apex code that is executed with the executeAnonymous call and Connect in Apex always execute using the sharing rules of the current user. 
+  
+Without Sharing :
+  when declaring a class to ensure that the sharing rules for the current user are not enforced.
+  you can explicitly turn off sharing rule enforcement when a class is called from another class that is declared using with sharing.
+   
+Inherited Sharing :
+  inherited sharing keyword when declaring a class to enforce the sharing rules of the class that calls it.
+  Sharing rules of calling class will work not of the called class if inherited sharing used.
+  
+  
+Note :
+  1.if a method is defined in a class declared as with sharing is called by a class declared as without sharing, the method executes with sharing rules enforced.
+  2.Both inner classes and outer classes can be declared as with sharing. Inner classes do not inherit the sharing setting from their container class. 
+    Otherwise, the sharing setting applies to all code contained in the class, including initialization code, constructors, and methods.
+  3.Classes inherit sharing setting from a parent class when one class extends or implements another.
+  4.Apex triggers can’t have an explicit sharing declaration and run as without sharing.
+   
+   
+   
+
+
+
+
