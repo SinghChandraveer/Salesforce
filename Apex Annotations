@@ -1,0 +1,112 @@
+AuraEnabled Annotation :
+    The @AuraEnabled annotation enables client- and server-side access to an Apex controller method.
+    Providing this annotation makes your methods available to your Lightning components.
+    
+Future Annotation :
+    Use the future annotation to identify methods that are executed asynchronously. When you specify future, the method executes when Salesforce has available resources.
+    Methods with the future annotation must be static methods, and can only return a void type.
+    The specified parameters must be primitive data types, arrays of primitive data types, or collections of primitive data types.
+    Methods with the future annotation cannot take sObjects or objects as arguments.
+    Methods with the future annotation cannot be used in Visualforce controllers in either getMethodName or setMethodName methods, nor in the constructor.
+    You cannot call a method annotated with future from a method that also has the future annotation.
+    
+    
+InvocableMethod Annotation :
+    If a flow invokes Apex, the running user must have the corresponding Apex class security set in their user profile or permission set.
+    Implementation Notes - 
+        The invocable method must be static and public or global, and its class must be an outer class.
+        Only one method in a class can have the InvocableMethod annotation.
+        Other annotations can’t be used with the InvocableMethod annotation.
+    Inputs and Outputs - 
+        There can be at most one input parameter and its data type must be one of the following:
+        A list of a primitive data type or a list of lists of a primitive data type – the generic Object type is not supported.
+        A list of an sObject type or a list of lists of an sObject type.
+        A list of the generic sObject type (List<sObject>) or a list of lists of the generic sObject type (List<List<sObject>>).
+        A list of a user-defined type, containing variables of the supported types or user-defined Apex types, with the InvocableVariable annotation. Create a custom global or public Apex class to implement your data type, and make sure that your class contains at least one member variable with the invocable variable annotation.
+    Managed Packages
+        You can use invocable methods in packages, but after you add an invocable method you can’t remove it from later versions of the package.
+        Public invocable methods can be referred to by flows and processes within the managed package.
+        Global invocable methods can be referred to anywhere in the subscriber org. Only global invocable methods appear in Flow Builder and Process Builder in the subscriber org.
+
+    
+    public class AccountQueryAction {
+      @InvocableMethod(label='Get Account Names' description='Returns the list of account names corresponding to the specified account IDs.' category='Account')
+      public static List<String> getAccountNames(List<ID> ids) {
+        List<String> accountNames = new List<String>();
+        List<Account> accounts = [SELECT Name FROM Account WHERE Id in :ids];
+          for (Account account : accounts) {
+            accountNames.add(account.Name);
+          }
+        return accountNames;
+      }
+    }
+    
+    
+    
+    ********8 If we want to pass more then one perameter in the invocable method,
+    Use : @InvocableVariable
+      The invocable variable can’t be static or local, final, Protected or private.
+      The data type of the invocable variable must be primitive, sObject, either the generic sObject or a specific sObject, list or a list of lists of primitives, sObjects, objects created from Apex classes, or collections.
+
+                  global class ConvertLeadAction {
+                    @InvocableMethod(label='Convert Leads')
+                    global static List<ConvertLeadActionResult> convertLeads(List<ConvertLeadActionRequest> requests) {
+                      List<ConvertLeadActionResult> results = new List<ConvertLeadActionResult>();
+                      for (ConvertLeadActionRequest request : requests) {
+                        results.add(convertLead(request));
+                      }
+                      return results;
+                    }
+
+                    public static ConvertLeadActionResult convertLead(ConvertLeadActionRequest request) {
+                       // Code block with action
+                       return ConvertLeadActionResult_List
+                    }
+
+                    global class ConvertLeadActionRequest {
+                      @InvocableVariable(required=true)
+                      global ID leadId;
+
+                      @InvocableVariable(required=true)
+                      global String convertedStatus;
+
+                      @InvocableVariable
+                      global ID accountId;
+
+                      @InvocableVariable
+                      global ID contactId;
+
+                      @InvocableVariable
+                      global Boolean overWriteLeadSource;
+
+                      @InvocableVariable
+                      global Boolean createOpportunity;
+
+                      @InvocableVariable
+                      global String opportunityName;
+
+                      @InvocableVariable
+                      global ID ownerId;
+
+                      @InvocableVariable
+                      global Boolean sendEmailToOwner;
+                    }
+
+                    global class ConvertLeadActionResult {
+                      @InvocableVariable
+                      global ID accountId;
+
+                      @InvocableVariable
+                      global ID contactId;
+
+                      @InvocableVariable
+                      global ID opportunityId;
+                    }
+
+                    class ConvertLeadActionException extends Exception {}
+                  }
+    
+    
+    
+    
+    
