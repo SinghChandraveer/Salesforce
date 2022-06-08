@@ -29,17 +29,17 @@ InvocableMethod Annotation :
         Global invocable methods can be referred to anywhere in the subscriber org. Only global invocable methods appear in Flow Builder and Process Builder in the subscriber org.
 
     
-    public class AccountQueryAction {
-      @InvocableMethod(label='Get Account Names' description='Returns the list of account names corresponding to the specified account IDs.' category='Account')
-      public static List<String> getAccountNames(List<ID> ids) {
-        List<String> accountNames = new List<String>();
-        List<Account> accounts = [SELECT Name FROM Account WHERE Id in :ids];
-          for (Account account : accounts) {
-            accountNames.add(account.Name);
-          }
-        return accountNames;
-      }
-    }
+                                                    public class AccountQueryAction {
+                                                      @InvocableMethod(label='Get Account Names' description='Returns the list of account names corresponding to the specified account IDs.' category='Account')
+                                                      public static List<String> getAccountNames(List<ID> ids) {
+                                                        List<String> accountNames = new List<String>();
+                                                        List<Account> accounts = [SELECT Name FROM Account WHERE Id in :ids];
+                                                          for (Account account : accounts) {
+                                                            accountNames.add(account.Name);
+                                                          }
+                                                        return accountNames;
+                                                      }
+                                                    }
     
     
     
@@ -110,3 +110,77 @@ InvocableMethod Annotation :
     
     
     
+@isTest Annotation :
+        @isTest annotation to define classes and methods that only contain code used for testing.
+        The testMethod keyword is now deprecated. Use the @isTest annotation on classes and methods instead. The @isTest annotation on methods is equivalent to the testMethod keyword.
+        Classes and methods defined as @isTest can be either private or public. Classes defined as @isTest must be top-level classes.
+        Classes defined with the @isTest annotation don't count against your organization limit of 6 MB for all Apex code.
+        Classes defined as @isTest can't be interfaces or enums.
+        
+        
+                                                            @isTest
+                                                            private class MyTestClass {
+
+                                                               // Methods for testing
+                                                               @isTest static void test1() {
+                                                                  // Implement test code
+                                                               }
+
+                                                               @isTest static void test2() {
+                                                                  // Implement test code
+                                                               }
+
+                                                            }
+
+
+@isTest(SeeAllData=true) Annotation :
+        This grant test classes and individual test methods access to all data in the organization. 
+        The access includes pre-existing data that the test didn’t create.
+        Can be applied on perticular method or on complete class, if applied on class the annotation applies to all its test methods.
+        @isTest(SeeAllData=true) and @isTest(isParallel=true) annotations cannot be used together on the same Apex method.
+        
+@isTest(isParallel=true) Annotation :
+         indicate test classes that can run in parallel.
+         Default limits on the number of concurrent tests do not apply to these test classes.
+         This annotation makes the execution of test classes more efficient, because more tests can be run in parallel.
+         This annotation overrides settings that disable parallel testing.
+         @isTest(SeeAllData=true) and @isTest(isParallel=true) annotations cannot be used together on the same Apex method.
+
+
+@isTest(OnInstall=true) Annotation :
+        This annotation to specify which Apex tests are executed during package installation. This annotation is used for tests in managed or unmanaged packages. 
+        Only test methods with this annotation, or methods that are part of a test class that has this annotation, are executed during package installation.
+        A test method or a class that doesn't have this annotation, or that is annotated with @isTest(OnInstall=false) or @isTest, is not executed during installation.
+        
+        
+        In this example, During package installation test1 is executed but test2 and test3 is not.
+
+                                                        @isTest
+                                                        private class OnInstallClassTest {
+                                                           
+                                                           // This test method will be executed during the installation of the package.
+                                                           @isTest(OnInstall=true)
+                                                           static void test1() {
+                                                              // Some test code
+                                                           }
+
+                                                           // Tests excluded from running during the the installation of a package.
+
+                                                           @isTest
+                                                           static void test2() {
+                                                              // Some test code
+                                                           }
+
+                                                           static testmethod void test3() {
+                                                              // Some test code
+                                                           }
+                                                        }
+
+
+
+
+
+
+
+
+
