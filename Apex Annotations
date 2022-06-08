@@ -221,3 +221,57 @@ TestVisible Annotation :
                                                 }
 
 
+JsonAccess Annotation :
+        The @JsonAccess annotation defined at Apex class level controls whether instances of the class can be serialized or deserialized.
+        The serializable and deserializable parameters of the @JsonAccess annotation enforce the contexts in which Apex allows serialization and deserialization. You can specify one or both parameters, but you can’t specify the annotation with no parameters. The valid values for the parameters to indicate whether serialization and deserialization are allowed:
+            never: never allowed
+            sameNamespace: allowed only for Apex code in the same namespace
+            samePackage: allowed only for Apex code in the same package (impacts only second-generation packages)
+            always: always allowed for any Apex code
+
+                                // SomeSerializableClass is serializable in the same package and deserializable in the wider namespace
+                                @JsonAccess(serializable='samePackage' deserializable=’sameNamespace’)
+                                public class SomeSerializableClass { }
+                                // AlwaysDeserializable class is always deserializable and serializable only in the same namespace (default value from version 49.0 onwards)
+                                @JsonAccess(deserializable=’always’)
+                                public class AlwaysDeserializable { }
+
+NamespaceAccessible Annotation :
+        The @namespaceAccessible makes public Apex in a package available to other packages that use the same namespace.
+        Without this annotation, Apex classes, methods, interfaces, properties, and abstract classes defined in a 2GP package aren’t accessible to the other packages with which they share a namespace.
+        Apex that is declared global is always available across all namespaces, and needs no annotation.
+        You can't use the @namespaceAccessible annotation for an @AuraEnabled Apex method.
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
