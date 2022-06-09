@@ -1,0 +1,119 @@
+
+
+Operation	          Result Class
+
+insert              update	SaveResult Class
+upsert	            UpsertResult Class
+merge	              MergeResult Class
+delete	            DeleteResult Class
+undelete	          UndeleteResult Class
+convertLead	        LeadConvertResult Class
+emptyRecycleBin	    EmptyRecycleBinResult Class
+
+***Like all returned results, SaveResult contains a method called getErrors that returns a list of Database.Error objects, representing the errors encountered, if any.
+_____________________________________________________________________________________________________________________________________
+SaveResult Class :
+
+  Database.SaveResult[] srList = Database.insert(acc_list, false);
+  for (Database.SaveResult sr : srList) {
+    if (sr.isSuccess()) {
+        // Operation was successful, so get the ID of the record that was processed
+        System.debug('Successfully inserted account. Account ID: ' + sr.getId());
+    }
+    else {
+        // Operation failed, so get all errors                
+        for(Database.Error err : sr.getErrors()) {
+            System.debug('The following error has occurred.');                    
+            System.debug(err.getStatusCode() + ': ' + err.getMessage());
+            System.debug('Account fields that affected this error: ' + err.getFields());
+        }
+    }
+___________________________________________________________________________________________________________________________
+    
+UpsertResult Methods :
+  
+  Database.UpsertResult[] srList = Database.upsert(acc_list, false);
+  
+    getErrors()
+    If an error occurred, returns an array of one or more database error objects providing the error code and description. If no error occurred, returns an empty set.
+    
+    getId()
+    Returns the ID of the sObject you were trying to update or insert.
+    
+    isCreated()
+    A Boolean value that is set to true if the record was created, false if the record was updated.
+    
+    isSuccess()
+    Returns a Boolean value that is set to true if the DML operation was successful for this object, false otherwise.
+__________________________________________________________________________________________________________________________
+
+MergeResult Class :
+
+  Database.MergeResult[] srList = Database.merge(acc_list, false);
+
+    getErrors()
+    Returns a list of Database.Error objects representing the errors encountered, if any, during a merge operation using the Database.merge method. If no error occurred, returns null.
+    
+    getId()
+    Returns the ID of the master record into which other records were merged.
+    
+    getMergedRecordIds()
+    Returns the IDs of the records merged into the master record.
+    
+    getUpdatedRelatedIds()
+    Returns the IDs of all related records that were reparented as a result of the merge that are viewable by the user sending the merge call.
+    
+    isSuccess()
+    Indicates whether the merge was successful (true) or not (false).
+__________________________________________________________________________________________________________________________
+
+DeleteResult Class :
+
+  Database.DeleteResult[] srList = Database.delete(acc_list, false);
+
+    getErrors()
+    If an error occurred, returns an array of one or more database error objects providing the error code and description. If no error occurred, returns an empty set.
+    
+    getId()
+    Returns the ID of the sObject you were trying to delete.
+    
+    isSuccess()
+    A Boolean value that is set to true if the DML operation was successful for this object, false otherwise.
+__________________________________________________________________________________________________________________________
+
+UndeleteResult Class :
+  
+  Database.UndeleteResult[] srList = Database.undelete(acc_list, false);
+
+    getErrors()
+    If an error occurred, returns an array of one or more database error objects providing the error code and description. If no error occurred, returns null.
+    
+    getId()
+    Returns the ID of the sObject you were trying to undelete.
+    
+    isSuccess()
+    Returns a Boolean value that is set to true if the DML operation was successful for this object, false otherwise.
+
+
+==============================================================================================================================================
+==============================================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
