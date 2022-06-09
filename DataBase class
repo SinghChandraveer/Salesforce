@@ -1,5 +1,68 @@
+DMLOptions Class
+
+DmlOptions Properties :
+
+    allowFieldTruncation  : Specifies the truncation behavior of large strings.
+    assignmentRuleHeader  : Specifies the assignment rule to be used when creating a case or lead.
+    emailHeader           : Specifies additional information regarding the automatic email that gets sent when an events occurs.
+    localeOptions         : Specifies the language of any labels that are returned by Apex.
+    optAllOrNone          : Specifies whether the operation allows for partial success.
+
+++++++++++++++++++++
+DmlOptions.AssignmentRuleHeader // Runs/Not_Run the assignment rule while performing DML operation on CASE/LEAD
+
+                    1. assignmentRuleID : Specifies the ID of a specific assignment rule to run for the case or lead. The assignment rule can be active or inactive.(The ID can be retrieved by querying the AssignmentRule sObject.)
+                    2. useDefaultRule   : If specified as 'true' for a case or lead, the system uses the default (active) assignment rule for the case or lead.
+    
+        Database.DMLOptions dmo = new Database.DMLOptions();
+        dmo.assignmentRuleHeader.useDefaultRule= true;  OR dmo.assignmentRuleHeader.assignmentRuleId= '01QD0000000EqAn';
+        Lead l = new Lead(company='ABC', lastname='Smith');
+
+        l.setOptions(dmo); insert l;
+    OR
+        Database.insert(l,dmo);
+    
+++++++++++++++++++++
+DMLOptions.DuplicateRuleHeader  // Allow/Not_Allow to save duplicate record
+
+                    1. allowSave        : Set to true to save the duplicate record. Set to false to prevent the duplicate record from being saved.
+                    2. runAsCurrentUser : Set to 'true' to make sure that sharing rules for the current user are enforced when duplicate rules run.
+                                          Set to 'false' to use the sharing rules specified in the class for the request. 
+                                          If no sharing rules are specified, Apex code runs in system context and sharing rules for the current user are not enforced.
+                                          
 
 
+          Database.DMLOptions dml = new Database.DMLOptions(); 
+          dml.DuplicateRuleHeader.allowSave = true;
+          dml.DuplicateRuleHeader.runAsCurrentUser = true;
+          Account duplicateAccount = new Account(Name='dupe');
+          Database.SaveResult sr = Database.insert(duplicateAccount, dml);
+          if (sr.isSuccess()) {
+            System.debug('Duplicate account has been inserted in Salesforce!');
+          }
+
+++++++++++++++++++++
+DmlOptions.EmailHeader // Even though auto-sent emails can be triggered by actions in the Salesforce user interface, the DMLOptions settings for emailHeader take effect only for DML operations carried out in Apex code.
+
+                        The Salesforce user interface allows you to specify whether or not to send an email when the following events occur:
+                              Creation of a new case or task
+                              Conversion of a case email to a contact
+                              New user email notification
+                              Lead queue email notification
+                              Password reset
+                        In Apex saved against API version 15.0 or later, the Database.DMLOptions emailHeader property enables you to specify additional information regarding the email that gets sent when one of the events occurs because of Apex DML code execution.
+
+
+
+
+
+
+
+
+
+
+
+==============================================================================================================================================
 Operation	          Result Class
 
 insert              update	SaveResult Class
