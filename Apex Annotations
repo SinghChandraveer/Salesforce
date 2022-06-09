@@ -243,8 +243,20 @@ NamespaceAccessible Annotation :
         You can't use the @namespaceAccessible annotation for an @AuraEnabled Apex method.
         
 
+************************************************************************************************************************
 
+Test.startTest()  :  Test.stopTest()
+ The startTest and startStop are not mandatory methods. They are needed when you need to execute the asynchronous code. 
+ Now why asynchronous code, as async code is supposed to be executed sometime when salesforce server resource is available (means free) to execute the code. 
+ Any code that executes after the call tostartTest and before stopTest is assigned a new set of governor limits.
+ But if you are running a test class, developer wants to see the results right away, so calling startTest makes sure that the async code is called and executed right away. 
+ similary, stopTest makes sure that all the async code is executed and all the expected records are processed, hence the code after the stopTest statement gets the expected result from the async method. 
+ This async method can be batch apex or future methods.
 
+StartTest stopTest resetting the governor limits, is an additional advantage you get.  
+The primary goal of start and stopTest is execution of async code. As Async method query limits ideally should not be counted with your synchronous SQL queries in the test method, hence the code (SQL queries) between startTest and stopTest gets their own limits. 
+
+https://developer.salesforce.com/forums/?id=906F0000000kG4fIAE
 
 
 
