@@ -34,3 +34,23 @@ Creating Field Token
     
     DescribeFieldResult Methods : https://developer.salesforce.com/docs/atlas.en-us.238.0.apexref.meta/apexref/apex_methods_system_fields_describe.htm
     
+___________________________________________________________________________________________________________________________________________________________________
+
+Enforcing Object and Field Permissions
+
+if (Schema.sObjectType.Contact.fields.Email.isUpdateable()) {
+   // Update contact phone number
+}
+
+if (Schema.sObjectType.Contact.fields.Email.isCreateable()) {
+   // Create new contact
+}
+
+if (Schema.sObjectType.Contact.fields.Email.isAccessible()) {
+   Contact c = [SELECT Email FROM Contact WHERE Id= :Id];
+}
+
+if (Schema.sObjectType.Contact.isDeletable()) {
+   // Delete contact
+}
+
