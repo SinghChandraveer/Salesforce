@@ -160,16 +160,56 @@ UndeleteResult Class :
 
 ==============================================================================================================================================
 ==============================================================================================================================================
+Transaction Control
+    Database.setSavepoint() is used to define a point at which DML operations can be rolled back. 
+    If any error occurs during DML Operations, that contains many statements, the application will be rolled back to the most recent save point 
+    and the entire transaction will not be aborted.
 
 
+                                                            Savepoint sp = Database.setSavepoint();;
 
+                                                            Account a = new Account();
+                                                            a.Name='1';
+                                                            a.AccountNumber = '2';
+                                                            insert a;
 
+                                                            Contact c = new Contact(Account = a.Id);
+                                                            try
+                                                            {
+                                                                insert c;
+                                                            }
+                                                            catch(Exception e)
+                                                            {
+                                                                Database.RollBack(sp);
+                                                            }
 
+        If you set more than one savepoint, then roll back to a savepoint that is not the last savepoint you generated, the later savepoint variables become invalid. 
+        For example, if you generated savepoint SP1 first, savepoint SP2 after that, and then you rolled back to SP1, the variable SP2 would no longer be valid. 
+        You will receive a runtime error if you try to use it.
+        
+        References to savepoints cannot cross trigger invocations because each trigger invocation is a new trigger context. 
+        If you declare a savepoint as a static variable then try to use it across trigger contexts, you will receive a run-time error.
+        
+        Each savepoint you set counts against the governor limit for DML statements.
+        Each rollback counts against the governor limit for DML statements. You will receive a runtime error if you try to rollback the database additional times.
+        
+        Static variables are not reverted during a rollback. If you try to run the trigger again, the static variables retain the values from the first run.
 
+        
+        The ID on an sObject inserted after setting a savepoint is not cleared after a rollback. 
+        Create an sObject to insert after a rollback. Attempting to insert the sObject using the variable created before the rollback fails because the sObject variable has an ID. 
+        Updating or upserting the sObject using the same variable also fails because the sObject is not in the database and, thus, cannot be updated.
 
+______________________________________________________________________________________________________________________________________________
+Locking Statements :
+    use "FOR UPDATE" to lock sObject records while they’re being updated in order to prevent other transactions to happen on same record.
+    While an sObject record is locked, no other client or user is allowed to make updates either through code or the Salesforce user interface. The lock gets released when the transaction completes.
+    
+Account [] accts = [SELECT Id FROM Account LIMIT 2 FOR UPDATE];
 
-
-
+        If you attempt to lock a record currently locked by another client, your process waits a maximum of 10 seconds for the lock to be released before acquiring a new lock.
+        If the wait time exceeds 10 seconds, a QueryException is thrown. 
+        Similarly, if you attempt to update a record currently locked by another client and the lock isn’t released within a maximum of 10 seconds, a DmlException is thrown.
 
 
 
