@@ -1,0 +1,47 @@
+System Mode: 
+    System mode derives the running code by disregarding the user’s consent. For example: If a logged-in user wants to create a record in system mode. Create permission is not required for the creation of records in this mode.
+    Apex code approaches to all objects and field approvals, sharing rules, field-level security is not applied for the recent user. So that it ensures you that apex code won’t disregard to run because they don’t have the field or object permission.
+    In salesforce, We all know that all the apex code runs in System mode because it ignores the user's approvals. Just an exception is obscure squares like architect  console and standard controllers. Without a doubt, even the runAs() method doesn't implement user assets or field-level approvals, it just maintains record sharing.
+
+User Mode:
+    User mode is similar to running the apex code with respect to user’s support and their sharing of records. For example:  If a logged-in user wants to create a record in user mode. Create permission is required for the creation of records in this mode.
+    In this mode, field-level security, field approvals, sharing rules, and profile level approvals are put in for recent users.
+    In Salesforce, only standard controllers and developer consoles run in user mode.
+    Let’s think about the operation and their mode of execution in Salesforce...
+
+**Here is the list of operations that runs on System Mode and User Mode.
+
+              Apex trigger - System Mode
+              All types of Jobs like Batch and scheduler apex -  System Mode
+              Anonymous Apex - User Mode
+              Apex Web Services (means SOAP API and REST API) - System Mode
+              Auto-Response Rule - System Mode
+              Assignment Rule - System Mode
+              Chatter - User Mode
+              Email Service - User Mode
+              Test method with System.runAs() -  User Mode
+              Test method without System.runAs() - System Mode
+              Validation Rule -  System Mode
+              Workflow Rule - System Mode
+              Escalation Rule - System Mode
+              Formula Field - System Mode
+              Rollup Summary Field -  System Mode
+              Process Builder - System Mode
+              Visual Workflow or flow - By default it runs on User Mode
+              if it is called from the Process Builder - System Mode
+              if it is called from the Workflow -  System Mode
+              if it is called from Apex then it depends on with or without sharing of apex class.
+              if it is called from Custom Button - System Mode
+              if it is embedded in Visualforce – Depends on VF Page context
+              if it is called from REST API – System Mode
+              Approval Process - System Mode
+              Publisher Action - System Mode
+              InvocableMethod
+              if this method is called from flow – User mode
+              if this method is called from Process Builder – System mode
+              if this method is called from REST API – (depends on with or without sharing of the class)
+              Custom Button - System Mode
+              Visualforce Page 
+              StandardController – User Mode
+              StandardController with extension – System Mode
+              Custom Controller - It depends on with or without sharing the Apex controller class.
