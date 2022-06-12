@@ -1,0 +1,106 @@
+
+        Map<string,schema.SObjectType> Allobj_Map =  schema.getGlobalDescribe(); // key is object name & value is object token.
+        list<string> allobjnames = new list<string>(Allobj_Map.keyset()); // list of all object names.
+        Map<string,list<string>> ObjtoField_Map = new Map<string,list<string>>();
+        
+        for(string obj : allobjnames){
+            
+            schema.DescribeSObjectResult dsr = Allobj_Map.get(obj).getdescribe(); // object token to describe sobject result
+            Map<string,schema.SObjectField> allfiel_dmap = dsr.fields.getmap(); // getting field map,fieldname as key and field token as value.
+            list<string> Allfieldnames = new list<string>(allfiel_dmap.keyset());  // transforming field set to field list
+            
+            ObjtoField_Map.put(obj, Allfieldnames);
+        }
+        
+        Map<string,schema.SObjectField> allfiel_dmap = account.SobjectType.getdescribe().fields.getmap();
+        for(string f : allfiel_dmap.keyset()){
+        //system.debug('Fieldname - '+f+', Datatype - '+allfiel_dmap.get(f).getdescribe().getType()); // Printing Fields with their datatypes
+__________________________________________________________________________________________________________________________________________________________________
+Creating Object Token and describing its properties.
+
+    Schema.sObjectType ObjTOken = Account.sObjectType;
+    Schema.DescribeSObjectResult dsr = ObjTOken.getDescribe();
+OR
+    Schema.DescribeSObjectResult dsr= Schema.SObjectType.Account;
+    
+    DescribeSObjectResult Methods : https://developer.salesforce.com/docs/atlas.en-us.238.0.apexref.meta/apexref/apex_methods_system_sobject_describe.htm
+    
+Creating Field Token
+    
+    Schema.SObjectField fieldToken = Account.Description;
+    Schema.DescribeFieldResult dfr = fieldToken.getDescribe();
+    
+    Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.Account.fields.getMap();
+    
+    DescribeFieldResult Methods : https://developer.salesforce.com/docs/atlas.en-us.238.0.apexref.meta/apexref/apex_methods_system_fields_describe.htm
+    
+___________________________________________________________________________________________________________________________________________________________________
+
+Enforcing Object and Field Permissions
+
+                        if (Schema.sObjectType.Contact.fields.Email.isUpdateable()) {
+                           // Update contact phone number
+                        }
+
+                        if (Schema.sObjectType.Contact.fields.Email.isCreateable()) {
+                           // Create new contact
+                        }
+
+                        if (Schema.sObjectType.Contact.fields.Email.isAccessible()) {
+                           Contact c = [SELECT Email FROM Contact WHERE Id= :Id];
+                        }
+
+                        if (Schema.sObjectType.Contact.isDeletable()) {
+                           // Delete contact
+                        }
+
+------------------------------------------------------------------------------------------------------------------------------------
+Removes inaccessible fields from sObjects before DML operations.
+                
+                SObjectAccessDecision decision = stripInaccessible(accessCheckType, sourceRecords);
+                // The stripInaccessible method performs field-level access check for the source records in the context of the current user’s operation.
+
+Example :
+        List<Account> newAccounts = new List<Account>();
+        Account a = new Account(Name='Acme Corporation');
+        Account b = new Account(Name='Blaze Comics', Rating=’Warm’);
+        newAccounts.add(a);
+        newAccounts.add(b);
+
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.CREATABLE, newAccounts);
+        insert securityDecision.getRecords();   // No exceptions are thrown and no rating is set
+
+
+AccessType Enum :
+
+        CREATABLE	Check the fields of an sObject for create access.                               // used for INSERT DML
+        READABLE	Check the fields of an sObject for read access.
+        UPDATABLE	Check the fields of an sObject for update access.                               // used for UPDATE DML
+        UPSERTABLE	Check the fields of an sObject for both insert and update access.               // used for UPSERT DML
+
+
+SObjectAccessDecision Class Methods (https://developer.salesforce.com/docs/atlas.en-us.238.0.apexref.meta/apexref/apex_class_System_SObjectAccessDecision.htm)
+
+1.getModifiedIndexes()
+        Signature : public Set<Integer> getModifiedIndexes()
+        Returns the indexes of sObjects that are modified by the stripInaccessible method. //index of those fields whose acces user does'nt have and removed.
+        
+2.getRecords()
+        Signature : public List<SObject> getRecords()
+        Returns a list of new sObjects that are identical to the source records, that contain only the fields that the current user has access to.
+        the returned list objecttype/datatype is sObject.
+
+3.getRemovedFields()
+        Signature : public Map<String,Set<String>> getRemovedFields()
+        Returns a map of sObject types to their corresponding inaccessible fields.
+        key is a string representation of the sObject type. 
+        value is a set of strings, which denote the fields names that are inaccessible.
+        
+
+
+
+
+
+
+
+
