@@ -53,7 +53,20 @@ Enforcing Object and Field Permissions
                         if (Schema.sObjectType.Contact.isDeletable()) {
                            // Delete contact
                         }
+____________________________________________________________________________________________________________________________________________________________________
 
+Checking Custom Permissions : 
+
+                        String permissionName = 'Data Migration'; // permission name visible in the UI
+                        Boolean hasPermission = false;
+
+                        CustomPermission customPermission = [SELECT Id, DeveloperName FROM CustomPermission WHERE MasterLabel =: permissionName];
+
+                        hasPermission = FatureManagement.checkPermission(customPermission.DeveloperName); // E.g. Data_Migration
+
+                        if( hasPermission == false ) {
+                           ...
+                        }
 ------------------------------------------------------------------------------------------------------------------------------------
 Removes inaccessible fields from sObjects before DML operations.
                 
