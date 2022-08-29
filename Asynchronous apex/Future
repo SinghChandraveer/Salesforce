@@ -1,0 +1,18 @@
+Methods with the future annotation must be static methods,can only return a void type.
+The specified parameters must be primitive data types, arrays of primitive data types, or collections of primitive data types. 
+Methods with the future annotation cannot take sObjects or objects as arguments.
+You can invoke future methods the same way you invoke any other method. However, a future method can’t invoke another future method.
+Asynchronous calls, such as @future or executeBatch, called in a startTest, stopTest block, do not count against your limits for the number of queued jobs.
+
+
+
+global class FutureClass
+{
+    @future
+    public static void myFutureMethod()
+    {   
+         // Perform some operations
+    }
+}
+
+steps to pass an sObject list to future methods.
