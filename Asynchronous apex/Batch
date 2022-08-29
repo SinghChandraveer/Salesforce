@@ -55,3 +55,7 @@ public class SumOpportunityTotal implements Database.Batchable<sObject>, Databas
     system.debug(apexjobid);
   }
 }
+
+
+
+We can another batch class in finish class
