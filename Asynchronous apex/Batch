@@ -53,9 +53,36 @@ public class SumOpportunityTotal implements Database.Batchable<sObject>, Databas
     
     apexjobid = [select id,JobType,CompletedDate,MethodName,Status from AsyncApexJob where id =: BC.getjobid()];
     system.debug(apexjobid);
+    
+    // Scheduling apex class to run after every 5min
+    Datetime dt = system.now().addminutes(5);
+    string day = string.valueOf(dt.day());
+    string month = string.valueOf(dt.month());
+    string hour = string.valueOf(dt.hour());
+    string minute = string.valueOf(dt.minute());
+    string day = string.valueOf(dt.day());
+    string year = string.valueOf(system.now().year());
+
+    string cronexp = '00 '+minute+' '+hour+' '+day+' '+month+' 'year;
+    schedulebatch myscheduleclass = new schedulebatch();
+    string jobname = 'Schedulejob1'+cronexp;
+    system.schedule(jobname,cronexp,myscheduleclass);
+    
   }
+}
+
+global class schedulebatch implements Schedulable {
+    global void execute(SchedulableContext sc) {
+        SumOpportunityTotal b = new SumOpportunityTotal(); 
+        database.executebatch(b,200); // executing batch class
+        system.abortjob(sc.gettriggerID());
+    }
 }
 
 
 
 We can another batch class in finish class
+
+
+
+
