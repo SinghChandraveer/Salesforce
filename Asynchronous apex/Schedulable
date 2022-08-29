@@ -37,4 +37,36 @@ global class Miko_Scheduled Implements Schedulable{
 }
 
 
+Scheduling with Cron Expression :
 
+System.Schedule(JobName, CronExpression, SchedulableClass)
+
+                                ExampleSchedulableClass testobj = new ExampleSchedulableClass();
+                                String cronexpression = ‘0 0 0 ? * * *’
+                                System.schedule(‘Testing’, cronexpression, testobj);
+
+
+
+
+Syntex : “Seconds Minutes Hours Day_of_month Month Day_of_week optional_year”
+
+? – No Value
+* – All Values
+L – Last
+
+0 0 5 ? * 1,2,3,4,5,6,7
+{1} {2} {3} {4} {5} {6}
+
+{1} Seconds - so 0 here i.e. start of the minute.
+
+{2} Minutes - 0 again so start of the hour.
+
+{3} Hours -  5 so 5 am. Uses 24 hour notation so 21 = 9pm
+
+{4} Day_of_month - ? means no specific value, only available for day of the month and day of the week.
+
+{5} Month - * indicates all values, i.e. every month. (if we only want to run on 1st Jan say, this would be 1)
+
+{6} Day_of_week - 1,2,3,4,5,6,7 here specifies days 1,2,3,4,5,6,7 in the week. We could also write this string as MON-FRI or preferably as * to indicate all values.
+
+So this job reads to run at "0 seconds past 0 minutes of the 5th hour on no specified day of the month for every month of the year for every day of the week".
