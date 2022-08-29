@@ -14,5 +14,38 @@ global class FutureClass
          // Perform some operations
     }
 }
+___________________________________________________________________________________________________________________________________
 
 steps to pass an sObject list to future methods.
+
+Trigger AccountTrigger_AT on Account (after insert){
+
+   //Using JSON.Serialize method we can convert the account list to Json
+
+String jsonString = json.serialize(Trigger.NEW);
+
+  // Pass the JSON String to the Future method
+
+AccountTriggerHandler_AC.processAccountData(jsonString);
+
+}
+AccountTriggerHandler_AC
+
+Public class AccountTriggerHandler_AC
+
+{
+   @future
+
+   public static void processAccountData(String jsonString){
+
+ //deserialize the JSON to the Account List
+
+      List<Account> accountList = (List<Account>)Json.deserialize(jsonString,List<Account>.class);
+
+//Printing the Account List
+
+System.debug(‘---Account List---’+’accountList);
+
+   }
+
+   }
