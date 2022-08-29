@@ -1,0 +1,40 @@
+We can schedule any apex batch class, apex method,
+
+
+
+// Scheduling Batch Class
+
+global class ClassName implements Schedulable {
+
+    global void execute(SchedulableContext sc){
+        ID BatchId = Database.executeBatch(new BatchClassExample(), 200);
+     }
+
+}
+
+// Scheduling a peace of apex code or apex method
+
+global class ClassName implements Schedulable {
+
+    global void execute(SchedulableContext sc){
+        myApexClass ap = new myApexClass();
+        myApexClass.myMethod();
+     }
+
+}
+
+//  
+
+global class Miko_Scheduled Implements Schedulable{
+      global void execute(SchedulableContext sc){
+          setToMiko();
+      }
+
+      public void setToMiko()
+      {
+          // Code
+      }
+}
+
+
+
