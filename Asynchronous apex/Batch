@@ -1,0 +1,57 @@
+****Database.Stateful****
+
+If you specify Database.Stateful in the class definition, you can maintain state of veriable across the transactions. 
+When Database.Stateful is used in a batch then the entire of state of the batch is maintained. Maintaining state is useful for counting or summarizing records as they’re processed.
+When using Database.Stateful, only instance member variables retain their values between transactions. Static member variables don’t retain their values and are reset between transactions. 
+Maintaining state is useful for counting or summarizing records as they’re processed.
+For example, suppose your job processed opportunity records. You could define a method in execute to aggregate totals of the opportunity amounts as they were processed.
+
+If you don’t specify Database.Stateful, all static and instance member variables are set back to their original values.
+
+
+**********Limitations : 
+Database.Stateful impacts the Batch performance by slowing it down.
+Batch class is  serialized at the end of each execute method to update its internal state which results in longer execution time, if Database.Stateful is used.
+Static member variables don’t retain their values and are reset between transactions.
+
+
+************Alternatives to using Database.Stateful
+
+              While Database. Stateful is a useful way to maintain state or variable values, 
+              the same values can be stored in a custom setting or custom metadata to be retrieved in each transactions.
+              
+              
+public class SumOpportunityTotal implements Database.Batchable<sObject>, Database.Stateful{
+
+  public integer Summary;
+  public inter successrecords = 0;
+  public integer failedrecords = 0;
+  list<opportunity> opplist = new list<opportunity>();
+
+  public Database.QueryLocator start(Database.BatchableContext BC){
+      String query = 'Select Id, Amount from Opportunity where createdDate = This_Year';
+      return Database.getQueryLocator(query);
+  }
+
+  public void execute(Database.BatchableContext BC, List<Opportunity> scope){
+      try{
+              for(Opportunity opp : scope){
+                     //The value of Summary will persist and added for all Opportunities in scope.
+                     Summary = Opp.Amount+Summary;
+                     successrecords = successrecords+1;
+                }
+                opplist.add(scope)
+         }
+      }catch(exception){
+       failedrecords = failedrecords +1;
+      }
+
+  public void finish(Database.BatchableContext BC){
+    system.debug('records processed - '+opplist.size());
+    system.debug('success records - '+successrecords)
+    system.debug('Failed records - '+failedrecords)
+    
+    apexjobid = [select id,JobType,CompletedDate,MethodName,Status from AsyncApexJob where id =: BC.getjobid()];
+    system.debug(apexjobid);
+  }
+}
