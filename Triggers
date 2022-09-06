@@ -1,0 +1,101 @@
+A trigger is Apex code that executes before or after the DML operation.
+
+Before triggers are used to update or validate record values before they’re saved to the database.
+After triggers are used to access field values that are set by the system and to create related records.
+
+____________________________________________________________________________________________________________
+Trigger.new	
+
+Returns a list of the new versions of the sObject records.
+This sObject list is only available in insert, update, and undelete triggers, and the records can only be modified in before triggers.
+____________________________________________________________________________________________________________
+Trigger.old	
+
+Returns a list of the old versions of the sObject records.
+This sObject list is only available in update and delete triggers.
+____________________________________________________________________________________________________________
+Trigger.newMap	
+
+A map of IDs to the new versions of the sObject records.
+This map is only available in before update, after insert, after update, and after undelete triggers.
+____________________________________________________________________________________________________________
+Trigger.oldMap	
+
+A map of IDs to the old versions of the sObject records.
+This map is only available in update and delete triggers.
+____________________________________________________________________________________________________________
+############################################################################################################
+
+before insert
+
+Can change fields using trigger.new : Allowed
+Can update original object using an update DML operation : Not applicable.
+Can delete original object using a delete DML operation : Not applicable.
+____________________________________________________________________________________________________________
+
+after insert
+
+Can change fields using trigger.new : Not allowed. A runtime error is thrown, as trigger.new is already saved.
+Can update original object using an update DML operation : Allowed.
+Can delete original object using a delete DML operation : Allowed.
+____________________________________________________________________________________________________________
+
+before update
+
+Can change fields using trigger.new : Allowed
+Can update original object using an update DML operation : Not applicable.
+Can delete original object using a delete DML operation : Not applicable.
+____________________________________________________________________________________________________________
+
+after update
+
+Can change fields using trigger.new : Not allowed. A runtime error is thrown, as trigger.new is already saved.
+Can update original object using an update DML operation : Allowed.
+Can delete original object using a delete DML operation : Allowed.
+____________________________________________________________________________________________________________
+
+before delete, after delete, after undelete
+
+Can change fields using trigger.new : Not allowed. A runtime error is thrown. trigger.new is not available in before delete triggers.
+
+
+
+****************************************************************************************
+Best Practices for Designing Bulk Triggers
+
+Minimize the number of data manipulation language (DML) operations by adding records to collections and performing DML operations against these collections.
+
+Minimize the number of SOQL statements by preprocessing records and generating sets, which can be placed in single SOQL statement used with the IN clause.
+
+One Trigger Per Object
+
+Avoid writing logic/method in the trigger. Logic/method written inside trigger cannot be exposed to other class. Thus, it decreased code reusability and not able to write test class properly.
+
+Always prefer to Bulkify your trigger code. It should work as designated when there are more than one record.
+
+Avoid using DML statements and SOQL Queries inside FOR Loops
+
+use Apex Collections to efficiently query data and store the data in memory. 
+
+Avoid Hardcoding IDs,  If possible, use custom label/custom setting to store such hardcoded values.
+
+ Avoid calling batch from Trigger, When a batch is called from Trigger there are high chances to hit the governor limit provided by Salesforce.
+
+
+************************************************************************************************************
+Prevent Recursive trigger
+
+public class p { 
+   public static boolean firstRun = true; 
+}
+The above example would be adapted to use this approach as follows…
+
+trigger TestTrigger on Test__c (before insert) {
+    if(p.firstRun)
+    {
+        p.firstRun = false;
+        //apex method
+    }    
+}
+
+
