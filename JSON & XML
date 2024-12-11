@@ -43,8 +43,51 @@ if (extraFields != null) {
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+JSON Generator Class
+The System.JSONGenerator class is provided to enable the generation of standard JSON-encoded content and gives you more control on the structure of the JSON output.
+https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_class_System_JsonGenerator.htm#apex_System_JsonGenerator_methods
 
+        List<GlAp_FieldProps> locationPropsInfo = new List<GlAp_FieldProps>();
 
+        JSONGenerator gen = JSON.createGenerator(Pretty);       // pretty = true/false
+        gen.writeStartObject();
+        
+        if(locationPropsInfo != null) {
+            gen.writeObjectField('locationPropsInfo', locationPropsInfo);
+        }
+        gen.writeStringField('Message', 'Record created successfully');
+        gen.writeNumberField('Age', 2);
+        gen.writeIdField('AccountId', acc.Id);
+
+        gen.writeEndObject();
+        return gen.getAsString();
+        
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+JSON Parser Class
+Use the System.JSONParser methods to parse a response that's returned from a call to an external service that is in JSON format,
+such as a JSON-encoded response of a Web service callout.
+
+Json parser considers all elements as tokens.
+Step1 - Create Constructor
+Step2 - Create parser
+Step3 - loop through the tokens
+
+String JSONContent = '{"firstName":"John","Curtomer":{"name":"Veer","Phone":"4234242"}}';
+JSONParser parser = JSON.createParser(JSONContent);
+// Advance to the next token.
+while (parser.nextToken() != null) {
+    System.debug('Current token: ' +
+        parser.getCurrentToken());
+    if(parser.getText()=="Customer"{
+        parser.nextToken();
+        Account a = (Account)parser.readValueAs(Account.class)
+        insert a;
+    }
+
+}
 
 
 
