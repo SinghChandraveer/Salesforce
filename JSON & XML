@@ -1,0 +1,64 @@
+!!!!! JSON Class !!!!!
+
+-->Serialization : Converting object Data into Json string.
+    serialize(objectToSerialize) : Serializes Apex objects into JSON content.
+    serialize(objectToSerialize, suppressApexObjectNulls) : Suppresses null values when serializing Apex objects into JSON content. it will remove the keys where vale is "null"
+    serializePretty(objectToSerialize) : Serializes Apex objects into JSON content and generates indented content using the pretty-print format.
+    serializePretty(objectToSerialize, suppressApexObjectNulls) : Suppresses null values when serializing Apex objects into JSON content and generates indented content using the pretty-print format.
+
+But above mehods add some additional info/key-value data into the generated json which increases the Json size, so we move to JSONGenerator
+
+-->Deserialization : Converting json data into object/map data with key-value pairs.
+    deserialize(jsonString, apexType) : Deserializes the specified JSON string into an Apex object of the specified type.
+    deserializeStrict(jsonString, apexType) : Deserializes the specified JSON string into an Apex object of the specified type.
+    deserializeUntyped(jsonString) : Deserializes the specified JSON string into collections of primitive data types.
+
+apextype - type of oject in which we want to convert our json data after deserializing. example - account.class / contact.class / integer.class / wraperclass.class
+also the output of JSON.deserialize is always object, so we need to typecast it as well with apextype.
+
+ex -  Account acc = (Account)JSON.deserialize(jString, Account.class);
+      list<Account> acclist = (list<Account>)JSON.deserialize(jString, list<Account>.class);
+      DataWrapper Data = (DataWrapper) JSON.deserialize(jsonData, DataWrapper.class);
+      SObject newRecord = (SObject) System.JSON.deserialize(newReading, Type.forName(objectName));
+
+--> Differencce between deserialize & deserializeStrict is, ex- if the json have some other data as well along with account fields, 
+    deserialize will return the account fields only in the returned object and will eliminate/ignore the other key-values,
+    WHile deserializeStrict will throw error in deserializing it and will strictly check if the jsondata is having only account fields or keys.
+
+--> deserializeUntyped will have nothing to do with data type, it will return the data inform of Map<String, Object>. 
+    in addition if we are not aware/sure about the data coming then we go for json parsing
+Map<String, Object> responseMap =   (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+
+if (extraFields != null) {
+                List<Object> extraFieldsList = (List<Object>) JSON.deserializeUntyped(extraFields);        
+                for (Object thisFieldObject : extraFieldsList) {
+                    Map<String,Object> thisField = (Map<String,Object>) thisFieldObject;
+                    Schema.SObjectField sof = Schema.SObjectType.User.fields.getMap().get((String) thisField.get('fieldPath'));
+                    u.put(sof, thisField.get('value'));
+                }
+            }
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
