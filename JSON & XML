@@ -89,6 +89,56 @@ while (parser.nextToken() != null) {
 
 }
 
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------
+                                    XML Class (Types - DTD & SCHEMA)
+                                    xml are designed to store-transport or carry the data not to show the data.
+                                    xml are self descriptive.
+                                    xml tags are not predefined, developer has to define tag and stricture by his own.
+                                    xml is platform & language independent.
+
+                                    -->XML in salesforce<--
+Dom Namespace : The Dom namespace provides classes and methods for parsing and creating XML content.
+
+The following are the classes in the Dom namespace.
+        Document Class - Use the Document class to process XML content. You can parse nested XML content that’s up to 50 nodes deep.
+        XmlNode Class - Use the XmlNode class to work with a node in an XML document.
+        XmlNodeType Enum - Specifies the node type in an XML document.
+
+
+The following are methods for Document. All are instance methods.
+        createRootElement(name, namespace, prefix) : Creates the top-level root element for a document.
+        getRootElement() : Returns the top-level root element node in the document. If this method returns null, the root element has not been created yet.
+        load(xml) : Parse the XML representation of the document specified in the xml argument and load it into a document.
+        toXmlString() : Returns the XML representation of the document as a String.
+
+--> createRootElement, toXmlString are used in creating a xml from data.
+--> getRootElement, load(xml) are used to deserialize the incoming xml to work on its data.
+
+Creating a XML ->
+            Dom.Document doc = new Dom.Document();  // initialize or creting the document object.
+            Dom.XmlNode root = doc.createRootElement('Account',null,null);  // Creating the root element.
+            
+            Dom.XmlNode child1 = root.addChildElement('Contacts',null,null); // create a child element.
+            child1.addTextNode(contact1);                                    // assigning value to child1 node.
+            Dom.XmlNode child2 = root.addChildElement('Contacts',null,null);
+            child2.addTextNode(contact2);
+            
+            string xmlstring = doc.toXmlString();
+            system.debug(root);                    // use the root xml as required.
+
+Deserializing a XML ->
+
+
+
+
+
+
+
+
+
 
 
 
