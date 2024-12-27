@@ -1,0 +1,103 @@
+public class XMLGenerator {
+    
+    private static final String CLASS_NAME = 'XMLGenerator';
+    private static final String DEBUG = '[' + CLASS_NAME + '] ';
+
+    // XML tags
+    private static final String VERSION = '1.0';
+    private static final String ENCODING = 'UTF-8';     // all fields are UTF-8 encoded
+    private static final String TYPE = 'type';
+    private static final String ATTRIBUTE_PREFIX = 'attr_';    // prefix for attribute field names
+    public static List<String> XMLList {get; private set;}		// list of the XML elements
+
+
+	public static String serialize(Object data) {
+		
+		XMLList = new List<String>(); // initialise the list
+		Integer index = 0;
+		XMLList.add('<?xml version="' + VERSION + '" encoding="' + ENCODING + '"?>');
+		XMLList.add('EOF');	// add a dummy string at the end of the list to give us a valid index position to add to
+		
+        addXMLObject(++index, data.toString(), data);	// build the list
+		
+		XMLList.remove(XMLList.size()-1);	// remove the dummy string at the end of the list
+		
+		return String.join(XMLList, '');	// concatenate the strings to give us the XML string
+	}
+
+	private static void addXMLField(Integer nodeIndex, Integer index, String fieldName, String fieldValue) {
+
+		// add attribute to the parent tag
+		String encodedAttribute = EncodingUtil.urlEncode(fieldValue, ENCODING);
+
+		if(encodedAttribute.contains('%2C') || encodedAttribute.contains('%3A')) {
+			if(encodedAttribute.contains('%2C')) {
+				encodedAttribute = encodedAttribute.replace('%2C', ',');
+			}
+			if(encodedAttribute.contains('%3A')) {
+				encodedAttribute = encodedAttribute.replace('%3A',':');
+			}
+		}
+
+		if (fieldName.startsWith(ATTRIBUTE_PREFIX)) {
+			String attributeName = fieldName.substringAfter(ATTRIBUTE_PREFIX);
+			XMLList[nodeIndex] = XMLList[nodeIndex].replace('>', ' ' + attributeName + '="' + encodedAttribute + '"' + '>');
+	
+		// add field as new node
+		} else {
+			XMLList.add(index++, '<' + fieldName + '>');
+			XMLList.add(index++, encodedAttribute);
+			XMLList.add(index++, '</' + fieldName + '>');
+		}
+	}
+    
+    private static void addXMLObject(Integer index, String nodeName, Object DTO) {
+
+		// create node
+		Integer nodeIndex = index;
+		XMLList.add(index++, '<' + nodeName + '>');		// node without attribute
+ 		XMLList.add(index, '</' + nodeName + '>');
+		
+        // add object to node
+        Map<String, Object> objectMap = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(DTO)); 
+        for (String fieldName : objectMap.keySet()) {
+        	
+        	Object member = objectMap.get(fieldName);
+        	if (member == null) {
+        		
+        		// null value field/attribute
+				if (fieldName.startsWith(ATTRIBUTE_PREFIX)) {
+					String attributeName = fieldName.substringAfter(ATTRIBUTE_PREFIX);
+					XMLList[nodeIndex] = XMLList[nodeIndex].replace('>', ' ' + attributeName + '="">');
+					
+				} else {
+        			XMLList.add(index++, '<' + fieldName + '/>');
+				}
+        		
+        	} else if (member InstanceOf Id) {
+        		addXMLField(nodeIndex, index, fieldName, String.valueOf(objectMap.get(fieldName)));
+        		
+        	} else if (member InstanceOf String) {
+        		addXMLField(nodeIndex, index, fieldName, String.valueOf(objectMap.get(fieldName)));
+
+        	} else if (member InstanceOf Integer) {
+        		addXMLField(nodeIndex, index, fieldName, String.valueOf(objectMap.get(fieldName)));
+        		
+        	} else if (member InstanceOf Decimal) {
+        		addXMLField(nodeIndex, index, fieldName, String.valueOf(objectMap.get(fieldName)));
+        		
+        	} else if (member InstanceOf Boolean) {
+        		addXMLField(nodeIndex, index, fieldName, String.valueOf(objectMap.get(fieldName)));        		
+        		
+        	} else if (member InstanceOf List<Object>) {
+        		List<Object> members = (List<Object>) objectMap.get(fieldName);
+        		for (Object childDTO : members) {
+        			addXMLObject(index, fieldName, childDTO);
+        		}
+        		
+        	} else {		// (member InstanceOf Object)
+				addXMLObject(index, fieldName, member);
+        	}       	
+        }
+	}
+}
