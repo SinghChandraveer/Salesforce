@@ -15,3 +15,37 @@ Lightning Data Service does a lot of work to make code perform well.
     Optimizes server calls by bulkifying and deduping requests.
 
 Lightning Data Service is built on top of User Interface API(UI API). UI API responses also respect CRUD access, field-level security settings, and sharing settings.
+
+
+Base Components:
+        lightning-record-edit-form, (doesn’t provide its own Cancel and Save buttons like lightning-record-form does. 
+        To create your own Cancel button that reverts the field values, include a lightning-button component that calls the reset() method.)
+                                    <template>
+                                      <lightning-record-form
+                                        record-id={recordId}
+                                        object-api-name={objectApiName}
+                                        columns="2"
+                                        mode="edit"
+                                        layout-type="Compact"
+                                      >
+                                      </lightning-record-form>
+                                    </template>
+
+        lightning-record-form,
+                                    <template>
+                                      <lightning-record-form record-id={recordId} object-api-name={objectApiName} fields={fields}>
+                                      </lightning-record-form>
+                                    </template>
+
+        lightning-record-view-form
+
+
+
+Wire adapters and functions in the lightning/ui*Api modules
+
+
+
+
+
+
+
