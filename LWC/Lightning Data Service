@@ -1,0 +1,17 @@
+Lightning Data Service manages data for you; changes to a record are reflected in all the technologies built on it. 
+Contrastingly, data from Apex is not managed; you must refresh the data.
+
+If Lightning Data Service detects a change to a record or any data or metadata it supports, 
+all components using a relevant @wire adapter receive the new value. The detection is triggered if:
+
+A Lightning web component mutates the record.
+The LDS cache entry expires and then a Lightning web component’s @wire triggers a read. 
+The cache entry and the Lightning web component must be in the same browser and app (for example Lightning Experience) for the same user.
+
+Lightning Data Service does a lot of work to make code perform well.
+    Loads record data progressively.
+    Caches results on the client.
+    Invalidates cache entries when dependent Salesforce data and metadata changes.
+    Optimizes server calls by bulkifying and deduping requests.
+
+Lightning Data Service is built on top of User Interface API(UI API). UI API responses also respect CRUD access, field-level security settings, and sharing settings.
