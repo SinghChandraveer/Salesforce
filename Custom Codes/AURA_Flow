@@ -1,0 +1,134 @@
+To call a flow from an Aura component, you need to embed a <lightning:flow> component within your Aura component
+and then use JavaScript to start the flow and manage its lifecycle.
+
+<aura:component implements="flexipage:availableForAllPageTypes" access="global">
+    <lightning:flow aura:id="flowData" onstatuschange="{!c.statusChange}" />
+</aura:component>
+-----------------------------------------------------------------------------------------------------------
+Initialize the flow: In the init handler of your Aura component, find the <lightning:flow> component and start the flow using its API name.
+({
+    init : function(component, event, helper) {
+        var flow = component.find("flowData");
+        var inputVariables = [
+            { name : "recordId", type : "String", value : component.get("v.recordId") },
+            { name : "accountName", type : "String", value : "Example Account" }
+        ];
+        flow.startFlow("Your_Flow_API_Name", inputVariables);
+    }
+})
+-----------------------------------------------------------------------------------------------------------
+
+Handle flow status changes: Use the onstatuschange event handler on the <lightning:flow> component to monitor the flow's status.
+You can then take actions based on whether the flow completed successfully, encountered an error, or paused on a screen. 
+
+({
+    statusChange : function(component, event, helper) {
+        var status = event.getParam("status");
+        if(status === "FINISHED") {
+            // Flow finished successfully
+        } else if (status === "ERROR") {
+            // Flow encountered an error
+        }
+    }
+})
+
+-------------------------------------------------------------------------------------------------------
+<aura:component implements="force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome,force:hasRecordId,flexipage:availableForAllPageTypes">
+     
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="hasError" type="Boolean" default="false"/>
+    <aura:attribute name="recordId" type="String" />
+     
+    <lightning:button variant="brand" label="Open Flow" title="Open Flow" onclick="{! c.handleOpenFlow }" />
+    <!--Use aura:if tag to display/hide popup based on isModalOpen value--> 
+    <aura:if isTrue="{!v.isModalOpen}">
+        <!-- Modal/Popup Box starts here-->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01"
+                 aria-modal="true" aria-describedby="modal-content-id-1"  
+                 class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                        Account Info
+                    </h2>
+                </header>
+                 
+                <!--Modal Body Start here-->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div>
+                        <!--Lightning Flow Attribute-->
+                        <lightning:flow aura:id="AccountInfoFlow" onstatuschange="{!c.statusChange}"/>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>
+                                --------------------------------------------------
+({
+    //Flow Status Change
+    statusChange : function (component, event, helper) {
+        //Check Flow Status
+        if (event.getParam('status') === "FINISHED_SCREEN" || event.getParam('status') === "FINISHED") {
+            var toastEvent = $A.get("e.force:showToast");
+            toastEvent.setParams({
+                title: "Success!",
+                message: "message",
+                type: "success"
+            });
+            toastEvent.fire();
+            component.set("v.isModalOpen", false);
+            $A.get('e.force:refreshView').fire();
+        } else if (event.getParam('status') === "ERROR") {
+            component.set("v.hasError", true);
+        }
+    },
+     
+    handleOpenFlow: function(component, event, helper) {
+        var accountId = component.get("v.recordId");
+         
+        // Set isModalOpen true
+        component.set("v.isModalOpen", true);
+         
+        //Find lightning flow from component
+        var flow = component.find("AccountInfoFlow");
+        //Put input variable values
+        var inputVariables = [
+            {
+                name : "recordId",
+                type : "String",
+                value : accountId
+            },
+            /*{
+                name : "Account Name",
+                type : "String",
+                value : "Test"
+            },*/
+        ];
+        //Reference flow's Unique Name
+        flow.startFlow("Account_Details", inputVariables);
+    },
+     
+    closeModel: function(component, event, helper) {
+        component.set("v.isModalOpen", false);
+    },   
+})
+
+
+
+
+
+
+
+
+
+
+
+
